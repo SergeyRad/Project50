@@ -4,6 +4,7 @@ using PlayerIOClient;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
+using PlayerIOClient;
 
 public class Main_Menu_Validation_Registration : MonoBehaviour {
 
@@ -19,11 +20,12 @@ public class Main_Menu_Validation_Registration : MonoBehaviour {
     private bool okayEmail;
     private bool okayPassword1;
     private bool okayPassword2;
+
     void Start() {
-        connectToServer();
-        okayEmail = true;
-        okayPassword1 = true;
-        okayPassword2 = true;
+        //connectToServer();
+        okayEmail = false;
+        okayPassword1 = false;
+        okayPassword2 = false;
 
         emailError.enabled = !okayEmail;
         password1Error.enabled = !okayPassword1;
@@ -33,25 +35,8 @@ public class Main_Menu_Validation_Registration : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Return)) {
             onRegistration();
         }
-
-        foreach (Message m in ms) {
-            switch (m.Type) {
-                case "RegApply":
-                    if (m.GetBoolean(0)) {
-                        Debug.Log("Регистрация успешна!");
-                        Application.LoadLevel("main_menu_validation_login");
-                    }
-                    else {
-                        Debug.Log("Регистрация не удалась!");
-                    }
-                    break;
-                case "Err":
-                    Debug.Log(m.GetString(0).ToString());
-                    break;
-            }
-        }
-        ms.Clear();
     }
+
     public void onRegistration() {
         email = inputEmail.text;
         password1 = inputPassword1.text;
@@ -79,8 +64,8 @@ public class Main_Menu_Validation_Registration : MonoBehaviour {
         }
 
         if (okayEmail && okayPassword1 && okayPassword2) {
-            //connectToServer();
-            connect.Send("Reg", email, password1);
+            connectToServer();
+            //connect.Send("Reg", email, password1);
         }
 
         emailError.enabled = !okayEmail;
@@ -103,25 +88,51 @@ public class Main_Menu_Validation_Registration : MonoBehaviour {
         }
     }
 
-    Client client;
-    Connection connect;
-    List<Message> ms = new List<Message>();
     public void connectToServer() {
-        PlayerIO.Connect("shooter-gpmw9uiee0uxk34a7hzp7w", "Public", name, null, null, null, delegate(Client cl) {
-            Debug.Log("Подключились к серверу");
-            cl.Multiplayer.CreateJoinRoom(System.DateTime.Now.Ticks.ToString(), "regAutRoom", true, null, null, delegate(Connection con) {
-                connect = con;
-                Debug.Log("Подключились к комнате");
-                connect.OnMessage += connect_OnMessage;                
-            }, delegate(PlayerIOError error) {
-                Debug.Log("Ошибка подключения к комнате: " + error);
-            });
-        }, delegate(PlayerIOError err) {
-            Debug.Log("Ошибка подключения: " + err);
-        });
-    }
+		email = email.Replace ("@", " ");
+        PlayerIO.Connect(
+			"shooter-gpmw9uiee0uxk34a7hzp7w", 
+			"public", 
+			name, 
+			null, 
+			null, 
+			null, 
+			delegate(Client cl) {
+            	Debug.Log("Подключились к серверу");
 
-    void connect_OnMessage(object sender, Message e) {
-        ms.Add(e);
+				cl.BigDB.LoadSingle (
+					"users",
+					"email",
+					new object[]{email},
+					delegate(DatabaseObject value) {
+						if (value != null){
+							Debug.Log ("Пользователь уже зарегистрирован!");
+						} else {
+							DatabaseObject obj = new DatabaseObject();
+							obj.Set("email", email);
+							obj.Set("password", password1);
+							cl.BigDB.CreateObject(
+								"users",
+								email,
+								obj,
+								delegate(DatabaseObject data) {
+									data.Save();
+									Application.LoadLevel("main_menu_validation_login");
+								},
+								delegate(PlayerIOError error) {
+									Debug.Log("Ошибка регистрации: " + error);
+								}
+							);
+						}
+					},
+					delegate(PlayerIOError err) {
+						Debug.Log("Ошибка регистрации: " + err);
+					}
+				);
+            	
+	        }, delegate(PlayerIOError err) {
+	            Debug.Log("Ошибка подключения: " + err);
+	        }
+		);
     }
 }

@@ -28,3 +28,13 @@ C:\Users\Admin\Desktop\Unity3D\Multiplayer\Serverside Code\Player.IO Test Server
 C:\Users\Admin\Desktop\Unity3D\Multiplayer\Serverside Code\Player.IO Test Server Project\bin\Debug\Shooter.pdb
 C:\Users\Admin\Desktop\Unity3D\Multiplayer\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO GameLibrary.xml
 C:\Users\Admin\Desktop\Unity3D\Multiplayer\Serverside Code\Player.IO Test Server Project\obj\Debug\Player.IO Test Server.VS2010.csprojResolveAssemblyReference.cache
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Player.IO Test Server Project\obj\Debug\Test Server.exe
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Player.IO Test Server Project\obj\Debug\Test Server.pdb
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Player.IO Test Server Project\bin\Debug\Test Server.exe
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Player.IO Test Server Project\bin\Debug\Test Server.pdb
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO Development Server.exe
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO GameLibrary.dll
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Player.IO Test Server Project\bin\Debug\Shooter.dll
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Player.IO Test Server Project\bin\Debug\Shooter.pdb
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Player.IO Test Server Project\bin\Debug\Player.IO GameLibrary.xml
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Player.IO Test Server Project\obj\Debug\Player.IO Test Server.VS2010.csprojResolveAssemblyReference.cache

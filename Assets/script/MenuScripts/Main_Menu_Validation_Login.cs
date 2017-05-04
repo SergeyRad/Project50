@@ -14,6 +14,9 @@ public class Main_Menu_Validation_Login : MonoBehaviour {
     private string password;
     private bool okayEmail;
     private bool okayPassword;
+	private bool connected = false;
+	private Client client;
+
     void Start() {
         okayEmail = true;
         okayPassword = true;
@@ -21,40 +24,8 @@ public class Main_Menu_Validation_Login : MonoBehaviour {
         emailError.enabled = !okayEmail;
         passwordError.enabled = !okayPassword;
     }
-    void Update() {
-        if (Input.GetKeyDown(KeyCode.Return)) {
-            onLogIn();
-        }
 
-        foreach (Message m in ms) {
-            switch (m.Type) {
-                case "Aut":
-                    if (m.GetBoolean(0)) {
-                        Debug.Log("Авторизация успешна!");
-                        Application.LoadLevel("main_menu");
-                    }
-                    else {
-                        Debug.Log("Авторизация не удалась!");
-                    }
-                    break;
-                case "ErrAut":
-                    Debug.Log(m.GetString(0).ToString());
-                    break;
-                case "Err":
-                    Debug.Log(m.GetString(0).ToString());
-                    break;
-            }
-        }
-        ms.Clear();
-    }
     public void onLogIn() {
-        //TODO Alexander
-        /** if feedback from server is false, 
-        variables okayEmail and okayPassword should be false,
-        (if bad email, okayEmail = false, if bad password, okayPassword = false)
-        if data is correct, those variables should be true,
-        variables email and password are having userdata from input fields*/
-
         email = inputEmail.text;
         password = inputPassword.text;
         if (email.Length > 3 && checkEmail(email)) {
@@ -95,26 +66,65 @@ public class Main_Menu_Validation_Login : MonoBehaviour {
         }
     }
 
-    Client client;
-    Connection connect;
-    List<Message> ms = new List<Message>();
+    
     public void connectToServer() {
-        PlayerIO.Connect("shooter-gpmw9uiee0uxk34a7hzp7w", "Public", name, null, null, null, delegate(Client cl) {
-            Debug.Log("Подключились к серверу");
-            cl.Multiplayer.CreateJoinRoom(System.DateTime.Now.Ticks.ToString(), "regAutRoom", true, null, null, delegate(Connection con) {
-                connect = con;
-                Debug.Log("Подключились к комнате");
-                connect.OnMessage += connect_OnMessage;
-                con.Send("Aut", email, password);
-            }, delegate(PlayerIOError error) {
-                Debug.Log("Ошибка подключения к комнате: " + error);
-            });
-        }, delegate(PlayerIOError err) {
-            Debug.Log("Ошибка подключения: " + err);
-        });
-    }
-
-    void connect_OnMessage(object sender, Message e) {
-        ms.Add(e);
+		email = email.Replace ("@", " ");
+		if (!connected)
+			PlayerIO.Connect (
+				"shooter-gpmw9uiee0uxk34a7hzp7w", 
+				"Public", 
+				email, 
+				null, 
+				null, 
+				null, 
+				delegate(Client cl) {
+					connected = true;
+					client = cl;
+					Debug.Log ("Подключились к серверу");
+					client.BigDB.LoadSingle (
+						"users",
+						"email",
+						new object[]{email},
+						delegate(DatabaseObject value) {
+							if (value != null){
+								Debug.Log ("Авторизация успешна!");
+								Settings.email = email;
+								Application.LoadLevel ("main_menu");
+							} else {
+								Debug.Log ("Неправильный пароль!");
+							}
+						},
+						delegate(PlayerIOError err) {
+							Debug.Log ("Пользователь не найден!");
+						}
+					);
+            	
+				}, delegate(PlayerIOError err) {
+				Debug.Log ("Ошибка подключения: " + err);
+			}
+		);
+		else {
+			client.BigDB.LoadSingle (
+				"users",
+				"email",
+				new object[]{email},
+				delegate(DatabaseObject value) {
+					if (value != null){
+						if (string.Equals(value.GetString("password"), password) ){
+							Debug.Log ("Авторизация успешна!");
+							Settings.email = email;
+							Application.LoadLevel ("main_menu");
+						} else {
+							Debug.Log ("Неправильный пароль!" + value.GetString("password"));
+						}
+					} else {
+						Debug.Log ("Пользователь не найден!" + value.GetString("password"));
+					}
+				},
+				delegate(PlayerIOError err) {
+					Debug.Log ("Пользователь не найден!");
+				}
+			);
+		}
     }
 }

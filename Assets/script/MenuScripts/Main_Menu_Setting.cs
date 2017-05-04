@@ -17,8 +17,7 @@ public class Main_Menu_Setting : MonoBehaviour {
 		Settings.sound_volume = sound_volume.value;
 		Settings.music_volume = music_volume.value;
 		Settings.graphic = Mathf.RoundToInt(graphics.value);
-	}	
-	public void onBack(){
+	}	public void onBack(){
 		Application.LoadLevel("main_menu");
 	}
 }

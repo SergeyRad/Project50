@@ -19,3 +19,10 @@ C:\Users\Admin\Desktop\Unity3D\Multiplayer\Serverside Code\Game Code\bin\Debug\P
 C:\Users\Admin\Desktop\Unity3D\Multiplayer\Serverside Code\Game Code\obj\Debug\Game Code.VS2010.csprojResolveAssemblyReference.cache
 C:\Users\Admin\Desktop\Unity3D\Multiplayer\Serverside Code\Game Code\obj\Debug\Shooter.dll
 C:\Users\Admin\Desktop\Unity3D\Multiplayer\Serverside Code\Game Code\obj\Debug\Shooter.pdb
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\bin\Debug\Shooter.dll
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\bin\Debug\Shooter.pdb
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\bin\Debug\Player.IO GameLibrary.dll
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\bin\Debug\Player.IO GameLibrary.xml
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\obj\Debug\Game Code.VS2010.csprojResolveAssemblyReference.cache
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\obj\Debug\Shooter.dll
+D:\work\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\obj\Debug\Shooter.pdb
