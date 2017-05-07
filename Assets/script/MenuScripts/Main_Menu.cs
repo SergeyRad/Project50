@@ -2,15 +2,20 @@
 using PlayerIOClient;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class Main_Menu : MonoBehaviour
 {
-
+	public Slider graphics;
+	public Slider sound_volume;
+	public Slider music_volume;
     private Connection connection;
     private Client client;
     private List<PlayerIOClient.Message> msgList = new List<PlayerIOClient.Message>();
     private bool access = false;
-
+    public GameObject main;
+    public GameObject settings;
+    
     void Start()
     {
         QualitySettings.SetQualityLevel(Settings.graphic);
@@ -118,7 +123,8 @@ public class Main_Menu : MonoBehaviour
     }
     public void onSetting()
     {
-        Application.LoadLevel("main_menu_settings");
+        main.SetActive(false);
+        settings.SetActive(true);
     }
 
     void FixedUpdate()
@@ -141,4 +147,15 @@ public class Main_Menu : MonoBehaviour
             }
         }
     }
+    public void onBack(){
+        main.SetActive(true);
+        settings.SetActive(false);
+	}
+    void Update () {
+		QualitySettings.SetQualityLevel(Settings.graphic);
+		AudioListener.volume = Settings.music_volume;
+		Settings.sound_volume = sound_volume.value;
+		Settings.music_volume = music_volume.value;
+		Settings.graphic = Mathf.RoundToInt(graphics.value);
+	}	
 }
