@@ -1,9 +1,12 @@
 using UnityEngine;
 using System.Collections;
+using System.Security.Cryptography;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using PlayerIOClient;
 using System.Collections.Generic;
+using System.Text;
+
 public class Main_Menu_Validation_Login : MonoBehaviour {
 
     public Text inputEmail;
@@ -16,6 +19,7 @@ public class Main_Menu_Validation_Login : MonoBehaviour {
     private bool okayPassword;
 	private bool connected = false;
 	private Client client;
+    private List<PlayerIOClient.Message> msgList = new List<PlayerIOClient.Message>();
 
     void Start() {
         okayEmail = true;
@@ -54,6 +58,20 @@ public class Main_Menu_Validation_Login : MonoBehaviour {
         Application.LoadLevel("main_menu_validation_registration");
     }
 
+    static string GetMd5Hash(string input)
+    {
+        using (MD5 md5Hash = MD5.Create())
+        {
+            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+            StringBuilder sBuilder = new StringBuilder();
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+            return sBuilder.ToString();
+        }
+    }
+
     bool checkEmail(string str) {
         try {
             return Regex.IsMatch(str,
@@ -70,7 +88,7 @@ public class Main_Menu_Validation_Login : MonoBehaviour {
     public void connectToServer() {
 		email = email.Replace ("@", " ");
 		if (!connected)
-			PlayerIO.Connect (
+            PlayerIO.Connect (
 				"shooter-gpmw9uiee0uxk34a7hzp7w", 
 				"Public", 
 				email, 
@@ -103,7 +121,36 @@ public class Main_Menu_Validation_Login : MonoBehaviour {
 				Debug.Log ("Ошибка подключения: " + err);
 			}
 		);
-		else {
+            /*PlayerIO.Connect(
+                "shooter-gpmw9uiee0uxk34a7hzp7w",
+                "Public",
+                email,
+                null,
+                null,
+                null,
+                delegate (Client cl) {
+                    Debug.Log("Authenticate");
+                    this.client = client;
+                    client.Multiplayer.DevelopmentServer = new ServerEndpoint("localhost", 8184);
+                    this.client.Multiplayer.CreateJoinRoom(
+                        null,
+                        "LobbyRoom",
+                        true,
+                        null,
+                        null,
+                        delegate (Connection connection)
+                        {
+                            connection.Send("Login");
+                            connection.OnMessage += handlemessage;
+                        },
+                        delegate (PlayerIOError error)
+                        {
+                            Debug.Log("Error Joining Room: " + error.ToString());
+                        }
+                    );
+                }
+            );*/
+        else {
 			client.BigDB.LoadSingle (
 				"users",
 				"email",
@@ -126,5 +173,9 @@ public class Main_Menu_Validation_Login : MonoBehaviour {
 				}
 			);
 		}
+    }
+    void handlemessage(object sender, PlayerIOClient.Message m)
+    {
+        msgList.Add(m);
     }
 }

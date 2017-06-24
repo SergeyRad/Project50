@@ -3,19 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using PlayerIOClient;
 
+
 public class Clientside : MonoBehaviour {
 	public string name = "Test";
-	public GameObject playerPrefab;
-	public GameObject bullet;
+	public GameObject[] playerPrefab = new GameObject[10];
+	public GameObject[] bullet = new GameObject[10];
 	public GameObject weapon;
-
-    public float rot = 0;
+    public Canvas menu;
+    public float rot = 0f;
+    public Texture2D[] numeral = new Texture2D[10];
 
 	private GameObject player;
 	private Client client;
 	private Connection connection;
 	private List<PlayerIOClient.Message> msgList = new List<PlayerIOClient.Message>();
 	private Dictionary<string,string> options = new Dictionary<string, string> ();
+    private int teamId = 0;
+
+    public GUIStyle style = new GUIStyle();
     
     void Start () {
 		options.Add ("maxplayers", "16");
@@ -30,7 +35,7 @@ public class Clientside : MonoBehaviour {
 				this.client = client;
 				client.Multiplayer.DevelopmentServer = new ServerEndpoint("localhost",8184);
                 client.Multiplayer.CreateJoinRoom(
-                    Settings.roomId,
+                    "room114.3668",
                     "GameRoom",
                     true,
                     options,
@@ -48,67 +53,111 @@ public class Clientside : MonoBehaviour {
 		);
 	}
 
-	public void SendAttack(){
-		connection.Send ("Attack", player.name, player.transform.position.x, player.transform.position.y);
-	}
-
 	void handlemessage(object sender, PlayerIOClient.Message m) {
 		msgList.Add(m);
 	}
 
+    public void Hit(string name) {
+        if (name == player.name)
+            connection.Send("hit", player.name);
+    }
+
 	void FixedUpdate() {
         
         if (player != null) {
-            connection.Send("Move", player.name, player.transform.position.x, player.transform.position.y, player.transform.rotation.z);
-            //player.transform.rotation = new Quaternion(0f, 0f, rot, 0f);
+            float angle = player.transform.eulerAngles.z > 180 ? player.transform.eulerAngles.z - 360: player.transform.eulerAngles.z;
+            connection.Send("Move", player.name, player.transform.position.x, player.transform.position.y, angle);
         }
 		foreach(PlayerIOClient.Message m in msgList) {
             switch(m.Type) {
-			case "PlayerJoined":
-                Debug.Log("It's not me");
-                GameObject otherPlayer = GameObject.Instantiate(playerPrefab) as GameObject;
-                otherPlayer.transform.position = new Vector3(m.GetFloat(1), m.GetFloat(2), 0);
-                otherPlayer.name = m.GetString(0);
-                otherPlayer.GetComponent<Control>().enabled = false;
-                Debug.Log(otherPlayer.name);
-                //newplayer.transform.Find("NameTag").GetComponent<TextMesh>().text = m.GetString(0);
-                break;
-             case "Create":
-                if (player == null) { 
-                    Debug.Log("It's me");
-                    player = (GameObject)Instantiate(playerPrefab);
-                    player.transform.position = new Vector3(m.GetFloat(1), m.GetFloat(2), 0);
-                    player.name = m.GetString(0);
-                    player.GetComponent<Control>().enabled = true;
-                    gameObject.GetComponent<Cam>().player = player.transform;
-                    Debug.Log(player.name);
-                }
-				break;
-			case "Move":
-				GameObject upplayer = GameObject.Find (m.GetString (0));
-                //upplayer.transform.LookAt (new Vector3 (m.GetFloat (1), 0, m.GetFloat (2)));
-                //upplayer.transform.eulerAngles = new Vector3 (0, upplayer.transform.eulerAngles.y, upplayer.transform.eulerAngles.z);
-                upplayer.transform.position = new Vector3(m.GetFloat(1), m.GetFloat(2), 0);
-                upplayer.transform.eulerAngles = new Vector3(0,0,m.GetFloat(3));
-				//float dist = Vector3.Distance (upplayer.transform.position, new Vector3 (m.GetFloat (1), 0, m.GetFloat (2)));
-				//connection.Send ("Move", playerPrefab.transform.position.x, playerPrefab.transform.position.y);
-				break;
-			case "Attack":
-				GameObject othplayer = GameObject.Find (m.GetString (0));
-				float posX = othplayer.transform.position.x + (Mathf.Cos((othplayer.transform.localEulerAngles.z - 90) * Mathf.Deg2Rad)) * -player.GetComponent<Control>().shooting_speed;
-				float posY = othplayer.transform.position.y + (Mathf.Sin((othplayer.transform.localEulerAngles.z - 90) * Mathf.Deg2Rad)) * -player.GetComponent<Control>().shooting_speed;
-				GameObject game_bullet = Instantiate(bullet, othplayer.transform.position, othplayer.transform.rotation) as GameObject;
-				game_bullet.GetComponent<Bullet>().master = othplayer;
-				game_bullet.GetComponent<Rigidbody2D>().AddForce(new Vector2(posX, posY));
-				break;
-			case "PlayerLeft":
-				GameObject playerd = GameObject.Find(m.GetString(0));
-				Destroy(playerd);
-				break;
-			}
+			    case "PlayerJoined":
+                    Debug.Log("It's not me");
+                    GameObject otherPlayer = GameObject.Instantiate(playerPrefab[m.GetInt(4)-1]) as GameObject;
+                    otherPlayer.transform.position = new Vector3(m.GetFloat(1), m.GetFloat(2), 0);
+                    otherPlayer.transform.rotation = new Quaternion(0,0,m.GetFloat(3),0);
+                    otherPlayer.name = m.GetString(0);
+                    otherPlayer.GetComponent<Control>().enabled = false;
+                    Debug.Log(otherPlayer.name);
+                    break;
+                 case "Create":
+                    if (player == null) { 
+                        Debug.Log("It's me");
+                        teamId = m.GetInt(4)-1;
+                        player = (GameObject)Instantiate(playerPrefab[teamId]);
+                        player.transform.position = new Vector3(m.GetFloat(1), m.GetFloat(2), 0);
+                        player.name = m.GetString(0);
+                        player.GetComponent<Control>().enabled = true;
+                        player.GetComponent<Control>().player = player;
+                        Debug.Log(player.name);
+                    }
+				    break;
+			    case "Move":
+				    GameObject upplayer = GameObject.Find (m.GetString (0));
+                    if (upplayer != null)
+                    {
+                        upplayer.transform.position = new Vector3(m.GetFloat(1), m.GetFloat(2), 0);
+                        upplayer.transform.eulerAngles = new Vector3(0, 0, m.GetFloat(3));
+                    }
+				    break;
+			    case "Attack":
+                    GameObject othplayer = GameObject.Find(m.GetString(0));
+                    if (othplayer != null && player != null)
+                    {
+                        float posX = othplayer.transform.position.x + (Mathf.Cos((othplayer.transform.localEulerAngles.z - 90) * Mathf.Deg2Rad)) * -player.GetComponent<Control>().shooting_speed;
+                        float posY = othplayer.transform.position.y + (Mathf.Sin((othplayer.transform.localEulerAngles.z - 90) * Mathf.Deg2Rad)) * -player.GetComponent<Control>().shooting_speed;
+                        GameObject game_bullet = Instantiate(bullet[m.GetInt(1)], othplayer.transform.position, othplayer.transform.rotation) as GameObject;
+                        game_bullet.GetComponent<Bullet>().master = othplayer;
+                        game_bullet.GetComponent<Rigidbody2D>().AddForce(new Vector2(posX, posY));
+                    }
+				    break;
+			    case "PlayerLeft":
+				    Destroy(GameObject.Find(m.GetString(0)));
+				    break;
+                case "hp":
+                    if (client.ConnectUserId == m.GetString(0))
+                        player.GetComponent<Control>().SetHealth(m.GetInt(1));  
+                    break;
+                case "Death":
+                    if (m.GetString(0) == player.name)
+                    {
+                        player.GetComponent<Control>().SetHealth(0);
+                        Destroy(player);
+                        StartCoroutine(Reborn());
+                    }
+                    else {
+                        Destroy(GameObject.Find(m.GetString(0)));
+                    }
+                    break;
+                case "Reborn":
+                    if (m.GetString(0) == client.ConnectUserId)
+                    {
+                        player = (GameObject)Instantiate(playerPrefab[teamId]);
+                        player.transform.position = new Vector3(m.GetFloat(1), m.GetFloat(2), 0);
+                        player.name = m.GetString(0);
+                        player.GetComponent<Control>().enabled = true;
+                        player.GetComponent<Control>().player = player;
+                        player.GetComponent<Control>().SetHealth(100);
+                    }
+                    else {
+                        GameObject rPlayer = GameObject.Instantiate(playerPrefab[m.GetInt(4) - 1]) as GameObject;
+                        rPlayer.transform.position = new Vector3(m.GetFloat(1), m.GetFloat(2), 0);
+                        rPlayer.transform.rotation = new Quaternion(0, 0, m.GetFloat(3), 0);
+                        rPlayer.name = m.GetString(0);
+                        rPlayer.GetComponent<Control>().enabled = false;
+                    }
+                    break;
+            }
 		}
 
-		// clear message queue after it's been processed
 		msgList.Clear();
 	}
+
+    public void Attack() {
+        connection.Send("Attack", player.name, teamId);
+    }
+
+    IEnumerator Reborn() {
+        yield return new WaitForSeconds(3f);
+        connection.Send("Reborn");
+    }
 }

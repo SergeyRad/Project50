@@ -1,9 +1,11 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Player.IO Test Server.VS2010", "Serverside Code\Player.IO Test Server Project\Player.IO Test Server.VS2010.csproj", "{0EDF2162-00A2-4DC8-A6B7-49B4F1A670AC}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game Code", "Serverside Code\Game Code\Game Code.csproj", "{9D801530-A9AF-4A0B-8639-B2DEB7D9E333}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game Code.VS2010", "Serverside Code\Game Code\Game Code.VS2010.csproj", "{9D801530-A9AF-4A0B-8639-B2DEB7D9E333}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Player.IO Test Server", "Serverside Code\Player.IO Test Server Project\Player.IO Test Server.csproj", "{0EDF2162-00A2-4DC8-A6B7-49B4F1A670AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

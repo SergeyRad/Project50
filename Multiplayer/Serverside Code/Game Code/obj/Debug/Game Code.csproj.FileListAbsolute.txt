@@ -1,0 +1,7 @@
+D:\GameDev\Working\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\bin\Debug\Player.IO GameLibrary.dll
+D:\GameDev\Working\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\bin\Debug\Player.IO GameLibrary.xml
+D:\GameDev\Working\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\obj\Debug\Game Code.csprojResolveAssemblyReference.cache
+D:\GameDev\Working\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\bin\Debug\Shooter.dll
+D:\GameDev\Working\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\bin\Debug\Shooter.pdb
+D:\GameDev\Working\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\obj\Debug\Shooter.dll
+D:\GameDev\Working\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\obj\Debug\Shooter.pdb

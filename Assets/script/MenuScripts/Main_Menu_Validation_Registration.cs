@@ -1,10 +1,11 @@
 using UnityEngine;
-using System.Collections;
+using System.Security.Cryptography;
 using PlayerIOClient;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using PlayerIOClient;
+using System.Text;
 
 public class Main_Menu_Validation_Registration : MonoBehaviour {
 
@@ -88,6 +89,20 @@ public class Main_Menu_Validation_Registration : MonoBehaviour {
         }
     }
 
+    static string GetMd5Hash(string input)
+    {
+        using (MD5 md5Hash = MD5.Create())
+        {
+            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+            StringBuilder sBuilder = new StringBuilder();
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+            return sBuilder.ToString();
+        }
+    }
+
     public void connectToServer() {
 		email = email.Replace ("@", " ");
         PlayerIO.Connect(
@@ -110,7 +125,7 @@ public class Main_Menu_Validation_Registration : MonoBehaviour {
 						} else {
 							DatabaseObject obj = new DatabaseObject();
 							obj.Set("email", email);
-							obj.Set("password", password1);
+							obj.Set("password", GetMd5Hash(password1));
 							cl.BigDB.CreateObject(
 								"users",
 								email,

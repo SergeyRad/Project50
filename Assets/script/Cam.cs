@@ -8,11 +8,14 @@ public class Cam : MonoBehaviour {
 	private Vector3 direction;	
 	public float mouseEffect = -0.1f; 
 	void Update(){
-		mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		direction.x = player.position.x + (player.position.x - mousePosition.x)*mouseEffect;
-		direction.y = player.position.y + (player.position.y - mousePosition.y)*mouseEffect;
-		direction.z = transform.position.z;
-		transform.position = direction;
+        if (player)
+        {
+            mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            direction.x = player.position.x + (player.position.x - mousePosition.x) * mouseEffect;
+            direction.y = player.position.y + (player.position.y - mousePosition.y) * mouseEffect;
+            direction.z = transform.position.z;
+            transform.position = direction;
+        }
 	}
 	
 }

@@ -11,7 +11,7 @@ Getting started
 ===============
 To launch the development server do the following:
 
-	a) Launch the Visual Studio 2010 Solution: "Serverside Code.VS2010.sln"
+	a) Launch the Visual Studio Solution: "Serverside Code.sln"
 
 	b) Press F5. This should start the development server.
 	   If a windows Firewall dialog pops up, press allow.

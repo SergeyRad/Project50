@@ -4,6 +4,82 @@
         <name>Player.IO GameLibrary</name>
     </assembly>
     <members>
+        <member name="T:PlayerIO.GameLibrary.PublishingNetwork">
+            <summary>
+            PlayerIO Publishing Network
+            </summary>
+        </member>
+        <member name="P:PlayerIO.GameLibrary.PublishingNetwork.Profiles">
+            <summary>Access to the PlayerIO Publishing Network profiles</summary> 
+        </member>
+        <member name="P:PlayerIO.GameLibrary.PublishingNetwork.Relations">
+            <summary>Access to the users PlayerIO Publishing Network relations</summary> 
+        </member>
+        <member name="P:PlayerIO.GameLibrary.PublishingNetwork.UserToken">
+            <summary> A UserToken that can be used to authenticate as the current user.</summary>
+        </member>
+        <member name="M:PlayerIO.GameLibrary.PublishingNetwork.Refresh(PlayerIO.GameLibrary.Callback)">
+            <summary>Refresh Profiles and Relations.</summary>
+            <param name="successCallback">Callback that will be called when the refresh is complete.</param>
+        </member>
+        <member name="M:PlayerIO.GameLibrary.PublishingNetwork.Refresh(PlayerIO.GameLibrary.Callback,PlayerIO.GameLibrary.Callback{PlayerIO.GameLibrary.PlayerIOError})">
+            <summary>Refresh Profiles and Relations.</summary>
+            <param name="successCallback">Callback that will be called when the refresh is complete.</param>
+            <param name="errorCallback">Callback that will be called if the refresh fails.</param>
+        </member>
+        <member name="T:PlayerIO.GameLibrary.PublishingNetworkProfiles">
+            <summary>
+            The PlayerIO Publishing Network profile service
+            </summary>
+        </member>
+        <member name="P:PlayerIO.GameLibrary.PublishingNetworkProfiles.MyProfile">
+            <summary>The profile of the current user</summary>
+        </member>
+        <member name="M:PlayerIO.GameLibrary.PublishingNetworkProfiles.LoadProfiles(System.String[],PlayerIO.GameLibrary.Callback{PlayerIO.GameLibrary.PublishingNetworkProfile[]})">
+            <summary>Load a set of PlayerIO Publishing Network profiles</summary>
+            <param name="userIds">The userIds of the profiles to load.</param>
+            <param name="successCallback">Callback that will be called with the loaded profiles.</param>
+        </member>
+        <member name="M:PlayerIO.GameLibrary.PublishingNetworkProfiles.LoadProfiles(System.String[],PlayerIO.GameLibrary.Callback{PlayerIO.GameLibrary.PublishingNetworkProfile[]},PlayerIO.GameLibrary.Callback{PlayerIO.GameLibrary.PlayerIOError})">
+            <summary>Load a set of PlayerIO Publishing Network profiles</summary>
+            <param name="userIds">The userIds of the profiles to load.</param>
+            <param name="successCallback">Callback that will be called with the loaded profiles.</param>
+            <param name="errorCallback">Callback that will be called if the load fails.</param>
+        </member>
+        <member name="T:PlayerIO.GameLibrary.PublishingNetworkProfile">
+            <summary>A PlayerIO Publishing Network profile </summary>
+        </member>
+        <member name="P:PlayerIO.GameLibrary.PublishingNetworkProfile.UserId">
+            <summary>The userId of the user</summary>
+        </member>
+        <member name="P:PlayerIO.GameLibrary.PublishingNetworkProfile.DisplayName">
+            <summary>The displayname of the user</summary>
+        </member>
+        <member name="P:PlayerIO.GameLibrary.PublishingNetworkProfile.AvatarUrl">
+            <summary>The url to the avatar of the user</summary>
+        </member>
+        <member name="P:PlayerIO.GameLibrary.PublishingNetworkProfile.LastOnline">
+            <summary>When was this user last seen</summary>
+        </member>
+        <member name="P:PlayerIO.GameLibrary.PublishingNetworkProfile.CountryCode">
+            <summary>The country code of the user</summary>
+        </member>
+        <member name="T:PlayerIO.GameLibrary.PublishingNetworkRelations">
+            <summary>
+            The PlayerIO Publishing Network relations service
+            </summary>
+        </member>
+        <member name="P:PlayerIO.GameLibrary.PublishingNetworkRelations.Friends">
+            <summary>List of all friends</summary>
+        </member>
+        <member name="M:PlayerIO.GameLibrary.PublishingNetworkRelations.IsFriend(System.String)">
+             <summary>Check if a specific user is a friend</summary>
+            <param name="userId">The userId of the user to check.</param>
+        </member>
+        <member name="M:PlayerIO.GameLibrary.PublishingNetworkRelations.IsBlocked(System.String)">
+             <summary>Check if a specific user is blocked</summary>
+            <param name="userId">The userId of the user to check.</param>
+        </member>
         <member name="M:PlayerIO.GameLibrary.ServerCache.Set(System.String,System.Object)">
             <summary>
             Inserts a cache entry into the cache by using a key and a value. A cache entry will never expire based on an absolute point in time, but it can be evicted from the cache by memory pressure in the server.
@@ -1337,12 +1413,12 @@
             <param name="errorCallback">Callback that will be called instead of successCallback if an error occurs during the operation.</param>
         </member>
         <member name="M:PlayerIO.GameLibrary.GameRequests.Delete(PlayerIO.GameLibrary.GameRequest[],PlayerIO.GameLibrary.Callback)">
-            <summary>Delete the given requests. Will also update the Received property after deletion is complete.</summary>
+            <summary>Delete the given requests. Will also update the WaitingRequests property after deletion is complete.</summary>
             <param name="requests">The list of requests to delete.</param>
             <param name="successCallback">Callback that will be called when the operation succeeds.</param>
         </member>
         <member name="M:PlayerIO.GameLibrary.GameRequests.Delete(PlayerIO.GameLibrary.GameRequest[],PlayerIO.GameLibrary.Callback,PlayerIO.GameLibrary.Callback{PlayerIO.GameLibrary.PlayerIOError})">
-            <summary>Delete the given requests. Will also update the Received property after deletion is complete.</summary>
+            <summary>Delete the given requests. Will also update the WaitingRequests property after deletion is complete.</summary>
             <param name="requests">The list of requests to delete.</param>
             <param name="successCallback">Callback that will be called when the operation succeeds.</param>
             <param name="errorCallback">Callback that will be called instead of successCallback if an error occurs during the operation.</param>
@@ -2473,11 +2549,11 @@
         <member name="F:PlayerIO.GameLibrary.ErrorCode.OneScoreNotLoaded">
             <summary>Cannot access OneScore before Refresh() has been called.</summary>
         </member>
-        <member name="F:PlayerIO.GameLibrary.ErrorCode.YahooNotAvailable">
-            <summary>The Yahoo features are only avaliable when authenticated to PlayerIO using Yahoo authentication. Authentication methods are managed in the connections setting of your game in the admin panel on PlayerIO.</summary>
+        <member name="F:PlayerIO.GameLibrary.ErrorCode.PublishingNetworkNotAvailable">
+            <summary>The Publishing Network features are only avaliable when authenticated to PlayerIO using Publishing Network authentication. Authentication methods are managed in the connections setting of your game in the admin panel on PlayerIO.</summary>
         </member>
-        <member name="F:PlayerIO.GameLibrary.ErrorCode.YahooNotLoaded">
-            <summary>Cannot access profile, friends, ignored before Yahoo has been loaded. Please refresh Yahoo first.</summary>
+        <member name="F:PlayerIO.GameLibrary.ErrorCode.PublishingNetworkNotLoaded">
+            <summary>Cannot access profile, friends, ignored before Publishing Network has been loaded. Please refresh Publishing Network first.</summary>
         </member>
         <member name="F:PlayerIO.GameLibrary.ErrorCode.DialogClosed">
             <summary>The dialog was closed by the user</summary>
@@ -2694,80 +2770,64 @@
             <param name="parameters">The data to add to the message</param>
         </member>
         <member name="T:PlayerIO.GameLibrary.Yahoo">
-            <summary>
-            Yahoo
-            </summary>
+            <summary>DEPRECATED</summary>
         </member>
         <member name="P:PlayerIO.GameLibrary.Yahoo.Profiles">
-            <summary>Access to Yahoo profiles</summary> 
+            <summary>DEPRECATED</summary>
         </member>
         <member name="P:PlayerIO.GameLibrary.Yahoo.Relations">
-            <summary>Access to the users Yahoo relations</summary> 
+            <summary>DEPRECATED</summary>
         </member>
         <member name="P:PlayerIO.GameLibrary.Yahoo.UserToken">
-            <summary> A UserToken that can be used to authenticate as the current user.</summary>
+            <summary>DEPRECATED</summary>
         </member>
         <member name="M:PlayerIO.GameLibrary.Yahoo.Refresh(PlayerIO.GameLibrary.Callback)">
-            <summary>Refresh Profiles and Relations.</summary>
-            <param name="successCallback">Callback that will be called when the refresh is complete.</param>
+            <summary>DEPRECATED</summary>
         </member>
         <member name="M:PlayerIO.GameLibrary.Yahoo.Refresh(PlayerIO.GameLibrary.Callback,PlayerIO.GameLibrary.Callback{PlayerIO.GameLibrary.PlayerIOError})">
-            <summary>Refresh Profiles and Relations.</summary>
-            <param name="successCallback">Callback that will be called when the refresh is complete.</param>
-            <param name="errorCallback">Callback that will be called if the refresh fails.</param>
+            <summary>DEPRECATED</summary>
         </member>
         <member name="T:PlayerIO.GameLibrary.YahooProfiles">
-            <summary>
-            The Yahoo profile service
-            </summary>
+            <summary>DEPRECATED</summary>
         </member>
         <member name="P:PlayerIO.GameLibrary.YahooProfiles.MyProfile">
-            <summary>The profile of the current user</summary>
+            <summary>DEPRECATED</summary>
         </member>
         <member name="M:PlayerIO.GameLibrary.YahooProfiles.LoadProfiles(System.String[],PlayerIO.GameLibrary.Callback{PlayerIO.GameLibrary.YahooProfile[]})">
-            <summary>Load a set of Yahoo profiles</summary>
-            <param name="userIds">The userIds of the profiles to load.</param>
-            <param name="successCallback">Callback that will be called with the loaded profiles.</param>
+            <summary>DEPRECATED</summary>
         </member>
         <member name="M:PlayerIO.GameLibrary.YahooProfiles.LoadProfiles(System.String[],PlayerIO.GameLibrary.Callback{PlayerIO.GameLibrary.YahooProfile[]},PlayerIO.GameLibrary.Callback{PlayerIO.GameLibrary.PlayerIOError})">
-            <summary>Load a set of Yahoo profiles</summary>
-            <param name="userIds">The userIds of the profiles to load.</param>
-            <param name="successCallback">Callback that will be called with the loaded profiles.</param>
-            <param name="errorCallback">Callback that will be called if the load fails.</param>
+            <summary>DEPRECATED</summary>
         </member>
         <member name="T:PlayerIO.GameLibrary.YahooProfile">
-            <summary>A Yahoo profile </summary>
+            <summary>DEPRECATED</summary>
         </member>
         <member name="P:PlayerIO.GameLibrary.YahooProfile.UserId">
-            <summary>The userId of the user</summary>
+            <summary>DEPRECATED</summary>
         </member>
         <member name="P:PlayerIO.GameLibrary.YahooProfile.DisplayName">
-            <summary>The displayname of the user</summary>
+            <summary>DEPRECATED</summary>
         </member>
         <member name="P:PlayerIO.GameLibrary.YahooProfile.AvatarUrl">
-            <summary>The url to the avatar of the user</summary>
+            <summary>DEPRECATED</summary>
         </member>
         <member name="P:PlayerIO.GameLibrary.YahooProfile.LastOnline">
-            <summary>When was this user last seen</summary>
+            <summary>DEPRECATED</summary>
         </member>
         <member name="P:PlayerIO.GameLibrary.YahooProfile.CountryCode">
-            <summary>The country code of the user</summary>
+            <summary>DEPRECATED</summary>
         </member>
         <member name="T:PlayerIO.GameLibrary.YahooRelations">
-            <summary>
-            The Yahoo relations service
-            </summary>
+            <summary>The country code of the user</summary>
         </member>
         <member name="P:PlayerIO.GameLibrary.YahooRelations.Friends">
-            <summary>List of all friends</summary>
+            <summary>The country code of the user</summary>
         </member>
         <member name="M:PlayerIO.GameLibrary.YahooRelations.IsFriend(System.String)">
-             <summary>Check if a specific user is a friend</summary>
-            <param name="userId">The userId of the user to check.</param>
+            <summary>The country code of the user</summary>
         </member>
         <member name="M:PlayerIO.GameLibrary.YahooRelations.IsBlocked(System.String)">
-             <summary>Check if a specific user is blocked</summary>
-            <param name="userId">The userId of the user to check.</param>
+            <summary>The country code of the user</summary>
         </member>
         <member name="P:PlayerIO.GameLibrary.Client.Web">
             <summary>
@@ -2999,8 +3059,11 @@
             </summary>
         </member>
         <member name="P:PlayerIO.GameLibrary.BasePlayer.Yahoo">
+            <summary>DEPRECATED</summary>
+        </member>
+        <member name="P:PlayerIO.GameLibrary.BasePlayer.PublishingNetwork">
             <summary>
-            The Yahoo object of the connected player
+            The PlayerIO Publishing Network object of the connected player
             </summary>
         </member>
         <member name="M:PlayerIO.GameLibrary.BasePlayer.GetPlayerObject(PlayerIO.GameLibrary.Callback{PlayerIO.GameLibrary.DatabaseObject})">
