@@ -5,35 +5,46 @@ using PlayerIOClient;
 
 
 public class Clientside : MonoBehaviour {
-    public string room_name = "Test";
-    public GameObject[] playerPrefab = new GameObject[10];
-    public GameObject[] bullet = new GameObject[10];
-    public GameObject weapon;
-    public Canvas menu;
-    public float rot = 0f;
-    public Texture2D[] numeral = new Texture2D[10];
 
-    private GameObject player;
-    private Client client;
-    private Connection connection;
-    private List<PlayerIOClient.Message> msgList = new List<PlayerIOClient.Message>();
-    private Dictionary<string, string> options = new Dictionary<string, string>();
+    public float rot = 0f;
+    public string room_name = "Test";
+
+    public Canvas menu;
+    public GameObject weapon;
+
+    public Texture2D[] numeral = new Texture2D[10];
+    public GameObject[] bullet = new GameObject[10];
+    public GameObject[] playerPrefab = new GameObject[10];
+
     private int teamId = 0;
+
+    private Client client;
+    private GameObject player;
+    private Connection connection;
+
+    private const int SERVER_PORT = 8184;
+    private const string SERVER_IP = "localhost";
+    private const string MAX_PLAYERS = "16";
+    private const string GAME_ID = "shooter-gpmw9uiee0uxk34a7hzp7w";
+
+
+    private Dictionary<string, string> options = new Dictionary<string, string>();
+    private List<PlayerIOClient.Message> msgList = new List<PlayerIOClient.Message>();
 
     public GUIStyle style = new GUIStyle();
 
     void Start() {
-        options.Add("maxplayers", "16");
+        options.Add("maxplayers", MAX_PLAYERS);
         string userId = Settings.email;
         PlayerIOClient.PlayerIO.Authenticate(
-            "shooter-gpmw9uiee0uxk34a7hzp7w",
+            GAME_ID,
             "public",
             new Dictionary<string, string> { { "userId", userId } },
             null,
             delegate (Client client) {
                 Debug.Log("Authenticate");
                 this.client = client;
-                client.Multiplayer.DevelopmentServer = new ServerEndpoint("localhost", 8184);
+                client.Multiplayer.DevelopmentServer = new ServerEndpoint(SERVER_IP, SERVER_PORT);
                 client.Multiplayer.CreateJoinRoom(
                     "room114.3668",
                     "GameRoom",
@@ -101,8 +112,8 @@ public class Clientside : MonoBehaviour {
                 case "Attack":
                 GameObject othplayer = GameObject.Find(m.GetString(0));
                 if (othplayer != null && player != null) {
-                    float posX = othplayer.transform.position.x + (Mathf.Cos((othplayer.transform.localEulerAngles.z - 90) * Mathf.Deg2Rad)) * -player.GetComponent<Control>().shooting_speed;
-                    float posY = othplayer.transform.position.y + (Mathf.Sin((othplayer.transform.localEulerAngles.z - 90) * Mathf.Deg2Rad)) * -player.GetComponent<Control>().shooting_speed;
+                    float posX = othplayer.transform.position.x + (Mathf.Cos((othplayer.transform.localEulerAngles.z - 90) * Mathf.Deg2Rad)) * -player.GetComponent<Control>().shootingSpeed;
+                    float posY = othplayer.transform.position.y + (Mathf.Sin((othplayer.transform.localEulerAngles.z - 90) * Mathf.Deg2Rad)) * -player.GetComponent<Control>().shootingSpeed;
                     GameObject game_bullet = Instantiate(bullet[m.GetInt(1)], othplayer.transform.position, othplayer.transform.rotation) as GameObject;
                     game_bullet.GetComponent<Bullet>().master = othplayer;
                     game_bullet.GetComponent<Rigidbody2D>().AddForce(new Vector2(posX, posY));

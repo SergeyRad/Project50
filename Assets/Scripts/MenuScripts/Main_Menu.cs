@@ -8,18 +8,19 @@ using UnityEngine.SceneManagement;
 
 public class Main_Menu : MonoBehaviour {
 
-    private Connection connection;
-    private Client client;
-    private List<PlayerIOClient.Message> msgList = new List<PlayerIOClient.Message>();
 
     public Slider graphics;
     public Slider sound_volume;
     public Slider music_volume;
-
-
     public GameObject main;
     public GameObject settings;
 
+    private const string GAME_ID = "shooter-gpmw9uiee0uxk34a7hzp7w";
+
+    private Connection connection;
+    private Client client;
+
+    private List<PlayerIOClient.Message> msgList = new List<PlayerIOClient.Message>();
 
 
     void Start() {
@@ -27,8 +28,9 @@ public class Main_Menu : MonoBehaviour {
         AudioListener.volume = Settings.music_volume;
         Settings.music_volume = music_volume.value;
         Settings.graphic = Mathf.RoundToInt(graphics.value);
+
         PlayerIO.Authenticate(
-            "shooter-gpmw9uiee0uxk34a7hzp7w",
+            GAME_ID,
             "public",
             new Dictionary<string, string> { { "userId", Settings.email } },
             null,

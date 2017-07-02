@@ -5,57 +5,61 @@ using UnityEngine;
 public class Control : MonoBehaviour {
 
     public int ammo = 30;
-    public bool in_menu;
+    public bool inMenu;
     public float force = 15;
-    public float shooting_speed;
-
+    public float shootingSpeed;
     public Canvas menu;
-    public GameObject player;
     public GameObject bullet;
+    public GameObject player;
     public GameObject weapon;
+
     public SpriteRenderer[] fire = new SpriteRenderer[3];
     public SpriteRenderer[] damage = new SpriteRenderer[3];
 
     private int health = 100;
-    private bool is_bot = false;
+    private bool isBot = false;
     private bool isReload = false;
     private float x, y;
     private float vertical;
     private float horizontal;
+    private Camera playerCamera;
+    private Vector2 forcePoint;
+    private Vector2 movementCheck;
+    private Vector3 mousePosition;
+    private KeyCode key_shoot = KeyCode.Mouse0;
+    private Rigidbody2D cacheRigidbody;
 
-    private Camera player_camera;
-    private Vector2 force_point;
-    private Vector2 movement_check;
-    private Vector3 mouse_position;
     private Texture2D[] numeral = new Texture2D[10];
-    private Rigidbody2D cache_rigidbody;
 
     void Start() {
-        cache_rigidbody = GetComponent<Rigidbody2D>();
-        player_camera = Camera.main;
-        player_camera.GetComponent<Cam>().enabled = true;
-        player_camera.GetComponent<Cam>().player = gameObject.transform;
-        menu = player_camera.GetComponent<Clientside>().menu;
-        player_camera.GetComponent<CursorController>().SetCursor();
-        this.numeral = player_camera.GetComponent<Clientside>().numeral;
+        cacheRigidbody = GetComponent<Rigidbody2D>();
+        playerCamera = Camera.main;
+        playerCamera.GetComponent<Cam>().enabled = true;
+        playerCamera.GetComponent<Cam>().player = gameObject.transform;
+        menu = playerCamera.GetComponent<Clientside>().menu;
+        playerCamera.GetComponent<CursorController>().SetCursor();
+        this.numeral = playerCamera.GetComponent<Clientside>().numeral;
     }
     void Shoot() {
-        float posX = this.transform.position.x + (Mathf.Cos((transform.localEulerAngles.z - 90) * Mathf.Deg2Rad)) * -shooting_speed;
-        float posY = this.transform.position.y + (Mathf.Sin((transform.localEulerAngles.z - 90) * Mathf.Deg2Rad)) * -shooting_speed;
+        float posX = this.transform.position.x + (Mathf.Cos((transform.localEulerAngles.z - 90) * Mathf.Deg2Rad)) * -shootingSpeed;
+        float posY = this.transform.position.y + (Mathf.Sin((transform.localEulerAngles.z - 90) * Mathf.Deg2Rad)) * -shootingSpeed;
         GameObject game_bullet = Instantiate(bullet, weapon.transform.position, transform.rotation) as GameObject;
         game_bullet.GetComponent<Bullet>().master = gameObject;
         game_bullet.GetComponent<Rigidbody2D>().AddForce(new Vector2(posX, posY));
     }
     void Update() {
         // In-game Menu
-        if(!in_menu) {
-            menu.enabled = in_menu = !in_menu;
-            player_camera.GetComponent<CursorController>().SetMenuCursor();
-        } else {
-            menu.enabled = in_menu = !in_menu;
-            player_camera.GetComponent<CursorController>().SetCursor();
+        if(Input.GetKeyDown(Settings.keyMenu)) {
+            if(!inMenu) {
+                menu.enabled = inMenu = !inMenu;
+                playerCamera.GetComponent<CursorController>().SetMenuCursor();
+            } else {
+                menu.enabled = inMenu = !inMenu;
+                playerCamera.GetComponent<CursorController>().SetCursor();
+            }
+
         }
-        if(Input.GetKeyDown(Settings.keyShoot) && !in_menu) {
+        if(Input.GetKeyDown(Settings.keyShoot) && !inMenu) {
             this.SendAttack();
         }
         if(Input.GetKeyDown(Settings.keyReload)) {
@@ -64,17 +68,17 @@ public class Control : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        movement_check.x = transform.position.x;
-        movement_check.y = transform.position.y;
-        if(!is_bot) {
+        movementCheck.x = transform.position.x;
+        movementCheck.y = transform.position.y;
+        if(!isBot) {
             // Movement
-            mouse_position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             vertical = Input.GetAxis("Vertical");
             horizontal = Input.GetAxis("Horizontal");
-            var angle = Vector2.Angle(Vector2.right, mouse_position - transform.position); // угол между вектором от объекта к мыше и осью х
+            var angle = Vector2.Angle(Vector2.right, mousePosition - transform.position); //угол между вектором от объекта к мыше и осью х
                                                                                            // TODO: make something better, than Elvis operator
-            transform.eulerAngles = new Vector3(0f, 0f, transform.position.y < mouse_position.y ? angle - 90 : -angle - 90);
-            cache_rigidbody.AddForce(new Vector2(force * horizontal, force * vertical));
+            transform.eulerAngles = new Vector3(0f, 0f, transform.position.y < mousePosition.y ? angle - 90 : -angle - 90);
+            cacheRigidbody.AddForce(new Vector2(force * horizontal, force * vertical));
         }
 
         if(isReload) {
@@ -90,7 +94,7 @@ public class Control : MonoBehaviour {
         if(ammo > 1) {
             if(!isReload) {
                 ammo--;
-                player_camera.GetComponent<Clientside>().Attack();
+                playerCamera.GetComponent<Clientside>().Attack();
             }
         } else {
             this.Reload();
@@ -100,6 +104,7 @@ public class Control : MonoBehaviour {
     public void Reload() {
         isReload = !isReload;
     }
+
     public void SetHealth(int hp) {
         this.health = hp;
     }
@@ -110,14 +115,14 @@ public class Control : MonoBehaviour {
             Destroy(other.gameObject);
             Camera.main.GetComponent<Clientside>().Hit(this.name);
             if(!damage[0].enabled && !damage[1].enabled && !damage[2].enabled)
-                StartCoroutine(Hit(0));
+                StartCoroutine(hit(0));
             else if(damage[0].enabled && !damage[1].enabled && !damage[2].enabled)
-                StartCoroutine(Hit(1));
+                StartCoroutine(hit(1));
             else if(damage[0].enabled && damage[1].enabled && !damage[2].enabled)
-                StartCoroutine(Hit(2));
+                StartCoroutine(hit(2));
         }
     }
-    IEnumerator Hit(int dmg) {
+    IEnumerator hit(int dmg) {
         damage[dmg].enabled = true;
         yield return new WaitForSeconds(2f);
         if(damage[0].enabled && !damage[1].enabled && !damage[2].enabled)
@@ -139,6 +144,6 @@ public class Control : MonoBehaviour {
             GUI.DrawTexture(new Rect(mouse.x + 18, -mouse.y + Screen.height - 8, 16, 16), numeral[0]);
             GUI.DrawTexture(new Rect(mouse.x + 35, -mouse.y + Screen.height - 8, 16, 16), numeral[ammo]);
         }
-        GUI.Label(new Rect(120f, 24f, 100, 21), health.ToString(), player_camera.GetComponent<Clientside>().style);
+        GUI.Label(new Rect(120f, 24f, 100, 21), health.ToString(), playerCamera.GetComponent<Clientside>().style);
     }
 }

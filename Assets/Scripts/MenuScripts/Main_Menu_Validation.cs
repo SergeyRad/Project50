@@ -7,6 +7,7 @@ using PlayerIOClient;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class Main_Menu_Validation : MonoBehaviour {
 
@@ -20,11 +21,15 @@ public class Main_Menu_Validation : MonoBehaviour {
     public Text emailErrorLogin;
     public Text inputPassword;
     public Text passwordError;
+    public InputField inputEmailLoginField;
+    public InputField inputPasswordField;
+
     private bool okayEmailLogin;
     private bool okayPassword;
     private bool connected = false;
     private string emailLogin;
     private string password;
+
     private Client client;
     private List<PlayerIOClient.Message> msgList = new List<PlayerIOClient.Message>();
 
@@ -35,6 +40,10 @@ public class Main_Menu_Validation : MonoBehaviour {
     public Text password1Error;
     public Text inputPassword2;
     public Text password2Error;
+    public InputField inputEmailField;
+    public InputField inputPassword1Field;
+    public InputField inputPassword2Field;
+
     private bool okayEmail;
     private bool okayPassword1;
     private bool okayPassword2;
@@ -231,22 +240,35 @@ public class Main_Menu_Validation : MonoBehaviour {
     void Update() {
         // Enter listener
         if (Input.GetKeyDown(KeyCode.Return))
-            if (main.activeSelf && !login.activeSelf && !registration.activeSelf)
+            if (main.activeSelf && !login.activeSelf && !registration.activeSelf) // main menu
                 onLoginMenu();
-            else if (!main.activeSelf && login.activeSelf && !registration.activeSelf)
+            else if (!main.activeSelf && login.activeSelf && !registration.activeSelf) // login menu
                 onLogin();
-            else if (!main.activeSelf && !login.activeSelf && registration.activeSelf)
+            else if (!main.activeSelf && !login.activeSelf && registration.activeSelf) // registration menu
                 onRegistration();
 
         // Escape listener
         if (Input.GetKeyDown(KeyCode.Escape))
-            if (main.activeSelf && !login.activeSelf && !registration.activeSelf)
+            if(main.activeSelf && !login.activeSelf && !registration.activeSelf) // main menu
                 // TODO: warning window, in which user will be asken will he quit the game - yes or not
                 Debug.Log("TODO: warning window, in which user will be asken will he quit the game - yes or not");
-            else if (!main.activeSelf && login.activeSelf && !registration.activeSelf)
+            else if(!main.activeSelf && login.activeSelf && !registration.activeSelf) // login menu
                 onBack();
-            else if (!main.activeSelf && !login.activeSelf && registration.activeSelf)
+            else if(!main.activeSelf && !login.activeSelf && registration.activeSelf)  // registration menu
                 onBack();
+
+        // Tab listener
+        if(Input.GetKeyDown(KeyCode.Tab))
+                if(EventSystem.current.currentSelectedGameObject == inputEmailLoginField.gameObject)
+                    EventSystem.current.SetSelectedGameObject(inputPasswordField.gameObject);
+                else if(EventSystem.current.currentSelectedGameObject == inputPasswordField.gameObject)
+                    EventSystem.current.SetSelectedGameObject(inputEmailLoginField.gameObject);
+                else if(EventSystem.current.currentSelectedGameObject == inputEmailField.gameObject)
+                    EventSystem.current.SetSelectedGameObject(inputPassword1Field.gameObject);
+                else if(EventSystem.current.currentSelectedGameObject == inputPassword1Field.gameObject)
+                    EventSystem.current.SetSelectedGameObject(inputPassword2Field.gameObject);
+                else if(EventSystem.current.currentSelectedGameObject == inputPassword2Field.gameObject)
+                    EventSystem.current.SetSelectedGameObject(inputEmailField.gameObject);
     }
 
 
@@ -255,11 +277,13 @@ public class Main_Menu_Validation : MonoBehaviour {
         main.SetActive(false);
         registration.SetActive(false);
         login.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(inputEmailLoginField.gameObject);
     }
     public void onRegistrationMenu() {
         main.SetActive(false);
         login.SetActive(false);
         registration.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(inputEmailField.gameObject);
     }
     public void onBack() {
         registration.SetActive(false);

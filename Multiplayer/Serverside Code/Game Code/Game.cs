@@ -6,10 +6,8 @@ using PlayerIO.GameLibrary;
 using System.Drawing;
 using System.Security.Cryptography;
 
-namespace Shooter
-{
-    public class Player : BasePlayer
-    {
+namespace Shooter {
+    public class Player : BasePlayer {
         protected int command = 0;
         protected float posx = 0;
         protected float posy = 0;
@@ -24,25 +22,20 @@ namespace Shooter
 
         public string status = "menu";
 
-        public void Reborn()
-        {
+        public void Reborn() {
             posx = bornPositionX[this.command];
             posy = bornPositionY[this.command];
             health = 100;
             islive = true;
         }
 
-        public bool isDeath()
-        {
-            if (health <= 0)
-            {
+        public bool isDeath() {
+            if(health <= 0) {
                 islive = false;
                 return true;
-            }
-            else
-            {
+            } else 
                 return false;
-            }
+            
         }
 
         public void Attack(int damage) {
@@ -53,151 +46,117 @@ namespace Shooter
         public int GetHealth() {
             return this.health;
         }
-        public int GetCommand()
-        {
+        public int GetCommand() {
             return this.command;
         }
-        public float GetPosX()
-        {
+        public float GetPosX() {
             return this.posx;
         }
-        public float GetPosY()
-        {
+        public float GetPosY() {
             return this.posy;
         }
-        public float GetRotate()
-        {
+        public float GetRotate() {
             return this.rotate;
         }
-        public string GetRoomId()
-        {
+        public string GetRoomId() {
             return this.room;
         }
         // Setters
-        public void SetCommand(int id)
-        {
+        public void SetCommand(int id) {
             this.command = id;
         }
-        public void SetPosX(float x)
-        {
+        public void SetPosX(float x) {
             this.posx = x;
         }
-        public void SetPosY(float y)
-        {
+        public void SetPosY(float y) {
             this.posy = y;
         }
-        public void SetRotate(float rotate)
-        {
+        public void SetRotate(float rotate) {
             this.rotate = rotate;
         }
-        public void SetRoomId(string id)
-        {
+        public void SetRoomId(string id) {
             this.room = id;
         }
     }
 
     [RoomType("GameRoom")]
-    public class GameCode : Game<Player>
-    {
+    public class GameCode : Game<Player> {
 
         private List<Player> players = new List<Player>();
         private string typeGame;
         private int counterCommand = 0;
 
-        public override void GameStarted()
-        {
+        public override void GameStarted() {
             Console.WriteLine("Game is started: " + RoomId);
-
         }
 
-        public override void GameClosed()
-        {
+        public override void GameClosed() {
             Console.WriteLine("RoomId: " + RoomId);
         }
 
-        public override void UserJoined(Player player)
-        {
+        public override void UserJoined(Player player) {
         }
 
-        public override void UserLeft(Player player)
-        {
+        public override void UserLeft(Player player) {
             players.Remove(player);
             Broadcast("PlayerLeft", player.ConnectUserId);
         }
 
-        public override void GotMessage(Player player, Message message)
-        {
-            switch (message.Type)
-            {
+        public override void GotMessage(Player player, Message message) {
+            switch(message.Type) {
                 case "Create":
-                    Console.WriteLine("Send " + player.ConnectUserId);
+                Console.WriteLine("Send " + player.ConnectUserId);
 
-                    counterCommand++;
-                    if (counterCommand > 4)
-                    {
-                        counterCommand = 1;
-                    }
-                    player.SetCommand(counterCommand);
-                    players.Add(player);
-                    player.Reborn();
-                    player.Send("Create", player.ConnectUserId, player.GetPosX(), player.GetPosY(), player.GetRotate(), player.GetCommand());
-                    if (players.Count != 0) {
-                        foreach (Player pl in players)
-                        {
-                            if (pl.ConnectUserId != player.ConnectUserId)
-                            {
-                                pl.Send("PlayerJoined", player.ConnectUserId, player.GetPosX(), player.GetPosY(), player.GetRotate(), player.GetCommand());
-                                player.Send("PlayerJoined", pl.ConnectUserId, pl.GetPosX(), pl.GetPosY(), pl.GetRotate(), pl.GetCommand());
-                            }
+                counterCommand++;
+                if(counterCommand > 4)
+                    counterCommand = 1;
+
+                player.SetCommand(counterCommand);
+                players.Add(player);
+                player.Reborn();
+                player.Send("Create", player.ConnectUserId, player.GetPosX(), player.GetPosY(), player.GetRotate(), player.GetCommand());
+                if(players.Count != 0) {
+                    foreach(Player pl in players) {
+                        if(pl.ConnectUserId != player.ConnectUserId) {
+                            pl.Send("PlayerJoined", player.ConnectUserId, player.GetPosX(), player.GetPosY(), player.GetRotate(), player.GetCommand());
+                            player.Send("PlayerJoined", pl.ConnectUserId, pl.GetPosX(), pl.GetPosY(), pl.GetRotate(), pl.GetCommand());
                         }
                     }
-                    break;
+                }
+                break;
                 case "Move":
-                    player.SetPosX(message.GetFloat(1));
-                    player.SetPosY(message.GetFloat(2));
-                    player.SetRotate(message.GetFloat(3));
-                    foreach (Player pl in players)
-                    {
-                        if (pl != null)
-                        if (pl.ConnectUserId != player.ConnectUserId)
-                        {
+                player.SetPosX(message.GetFloat(1));
+                player.SetPosY(message.GetFloat(2));
+                player.SetRotate(message.GetFloat(3));
+                foreach(Player pl in players) {
+                    if(pl != null)
+                        if(pl.ConnectUserId != player.ConnectUserId) 
                             pl.Send("Move", player.ConnectUserId, player.GetPosX(), player.GetPosY(), player.GetRotate());
-                        }
-                    }
-                    break;
+                }
+                break;
                 case "Chat":
-                    foreach (Player pl in players)
-                    {
-                        if (pl.ConnectUserId != player.ConnectUserId)
-                        {
-                            pl.Send("Chat", player.ConnectUserId, message.GetString(0));
-                        }
-                    }
-                    break;
+                foreach(Player pl in players)
+                    if(pl.ConnectUserId != player.ConnectUserId) 
+                        pl.Send("Chat", player.ConnectUserId, message.GetString(0));
+                break;
                 case "Attack":
-                    Broadcast("Attack", player.ConnectUserId, message.GetFloat(1));
-                    break;
+                Broadcast("Attack", player.ConnectUserId, message.GetFloat(1));
+                break;
                 case "hit":
-                    foreach (Player pl in players)
-                    {
-                        if (pl.ConnectUserId == message.GetString(0))
-                        {
-                            pl.Attack(20);
-                            if (pl.isDeath())
-                            {
-                                Broadcast("Death", message.GetString(0));
-                            }
-                            else
-                            {
-                                pl.Send("hp", message.GetString(0), pl.GetHealth());
-                            }
-                        }
+                foreach(Player pl in players) {
+                    if(pl.ConnectUserId == message.GetString(0)) {
+                        pl.Attack(20);
+                        if(pl.isDeath()) 
+                            Broadcast("Death", message.GetString(0));
+                        else 
+                            pl.Send("hp", message.GetString(0), pl.GetHealth());  
                     }
-                    break;
+                }
+                break;
                 case "Reborn":
-                    player.Reborn();
-                    Broadcast("Reborn", player.ConnectUserId, player.GetPosX(), player.GetPosY(), player.GetRotate(), player.GetCommand());
-                    break;
+                player.Reborn();
+                Broadcast("Reborn", player.ConnectUserId, player.GetPosX(), player.GetPosY(), player.GetRotate(), player.GetCommand());
+                break;
             }
         }
     }
@@ -205,63 +164,49 @@ namespace Shooter
 
 
     [RoomType("LobbyRoom")]
-    public class LobbyCode : Game<Player>
-    {
+    public class LobbyCode : Game<Player> {
 
-        public override void GameStarted()
-        {
+        public override void GameStarted() {
             Console.WriteLine("Lobby is started: " + RoomId);
 
         }
 
-        public override void GameClosed()
-        {
+        public override void GameClosed() {
             Console.WriteLine("Lobby closed: " + RoomId);
         }
 
-        public override void UserJoined(Player player)
-        {
+        public override void UserJoined(Player player) {
 
         }
 
-        public override void UserLeft(Player player)
-        {
+        public override void UserLeft(Player player) {
 
         }
 
-        public override void GotMessage(Player player, Message message)
-        {
-            switch (message.Type)
-            {
+        public override void GotMessage(Player player, Message message) {
+            switch(message.Type) {
                 case "Access":
-                    player.SetRoomId(FindRoom(player));
-                    player.Send("Access", player.GetRoomId());
-                    break;
-
-            }
+                player.SetRoomId(FindRoom(player));
+                player.Send("Access", player.GetRoomId());
+                break;
+}
         }
 
-        protected string FindRoom(Player player)
-        {
+        protected string FindRoom(Player player) {
             string name = "";
             PlayerIO.BigDB.LoadSingle(
             "roomsId",
             "isFull",
             new object[] { false },
             delegate (DatabaseObject result) {
-                if (result != null)
-                {
+                if(result != null) {
                     Console.WriteLine("Find room: " + result.GetString("id"));
                     result.Set("countPlayers", (result.GetInt("countPlayers") + 1));
-                    if (result.GetInt("countPlayers") == 16)
-                    {
+                    if(result.GetInt("countPlayers") == 16)
                         result.Set("isFull", true);
-                    }
                     result.Save();
                     name = result.Key;
-                }
-                else
-                {
+                } else {
                     Console.WriteLine("Not find room");
                     DatabaseObject obj = new DatabaseObject();
                     obj.Set("id", player.ConnectUserId);
@@ -271,8 +216,7 @@ namespace Shooter
                         "roomsId",
                         "room" + new Random().Next(),
                         obj,
-                        delegate (DatabaseObject res)
-                        {
+                        delegate (DatabaseObject res) {
                             Console.WriteLine("Create room - " + res.Key);
                             res.Save();
                             name = res.Key;
