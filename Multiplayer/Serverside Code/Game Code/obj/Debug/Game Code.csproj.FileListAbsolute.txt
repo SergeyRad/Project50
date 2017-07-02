@@ -5,3 +5,10 @@ D:\GameDev\Working\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\bin\
 D:\GameDev\Working\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\bin\Debug\Shooter.pdb
 D:\GameDev\Working\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\obj\Debug\Shooter.dll
 D:\GameDev\Working\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\obj\Debug\Shooter.pdb
+C:\Users\User\Desktop\space\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\bin\Debug\Shooter.dll
+C:\Users\User\Desktop\space\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\bin\Debug\Shooter.pdb
+C:\Users\User\Desktop\space\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\bin\Debug\Player.IO GameLibrary.dll
+C:\Users\User\Desktop\space\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\bin\Debug\Player.IO GameLibrary.xml
+C:\Users\User\Desktop\space\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\obj\Debug\Game Code.csprojResolveAssemblyReference.cache
+C:\Users\User\Desktop\space\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\obj\Debug\Shooter.dll
+C:\Users\User\Desktop\space\LibertationOfSpace\Multiplayer\Serverside Code\Game Code\obj\Debug\Shooter.pdb
