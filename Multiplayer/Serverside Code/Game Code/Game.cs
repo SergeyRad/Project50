@@ -18,7 +18,7 @@ namespace Shooter {
 
         private float[] bornPositionX = { -15f, -10f, 0f, 10f, 15f, 10f, 0f, -10f };
         private float[] bornPositionY = { 0f, 10f, 15f, 10f, 0f, -10f, 15f, -10f };
-        private bool islive = true;
+        private bool isAlive = true;
 
         public string status = "menu";
 
@@ -26,12 +26,12 @@ namespace Shooter {
             posx = bornPositionX[this.command];
             posy = bornPositionY[this.command];
             health = 100;
-            islive = true;
+            isAlive = true;
         }
 
         public bool isDeath() {
             if(health <= 0) {
-                islive = false;
+                isAlive = false;
                 return true;
             } else 
                 return false;
